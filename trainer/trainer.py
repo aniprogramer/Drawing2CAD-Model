@@ -44,7 +44,8 @@ class TrainerED(BaseTrainer):
         out_command = torch.argmax(torch.softmax(outputs['command_logits'], dim=-1), dim=-1)  # (N, S)
         out_args = torch.argmax(torch.softmax(outputs['args_logits'], dim=-1), dim=-1) - 1  # (N, S, N_ARGS)
         if refill_pad: # fill all unused element to -1
-            mask = ~torch.tensor(CAD_CMD_ARGS_MASK).bool().cuda()[out_command.long()]
+            cmd_args_mask = torch.as_tensor(CAD_CMD_ARGS_MASK.tolist(), dtype=torch.float32, device=out_command.device)
+            mask = ~cmd_args_mask.bool()[out_command.long()]
             out_args[mask] = -1
 
         out_cad_vec = torch.cat([out_command.unsqueeze(-1), out_args], dim=-1)

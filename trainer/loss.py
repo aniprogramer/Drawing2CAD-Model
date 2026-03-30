@@ -13,7 +13,7 @@ class NewCADLoss(nn.Module):
         self.args_dim = cfg.args_dim + 1
         self.weights = cfg.loss_weights
 
-        self.register_buffer("cmd_args_mask", torch.tensor(CAD_CMD_ARGS_MASK))
+        self.register_buffer("cmd_args_mask", torch.as_tensor(CAD_CMD_ARGS_MASK.tolist(), dtype=torch.float32))
 
     def forward(self, outputs, cad_data):
         # Target
